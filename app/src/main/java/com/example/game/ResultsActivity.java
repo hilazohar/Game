@@ -1,24 +1,50 @@
 package com.example.game;
 
-import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class ResultsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_results);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        TextView tvWinner = findViewById(R.id.tvWinner);
+        TextView tvBlueScore = findViewById(R.id.tvBlueScore);
+        TextView tvRedScore = findViewById(R.id.tvRedScore);
+        Button btnBack = findViewById(R.id.btnBack);
+
+        Intent intent = getIntent();
+        int blueScore = intent.getIntExtra("BLUE_SCORE", 0);
+        int redScore = intent.getIntExtra("RED_SCORE", 0);
+
+        tvBlueScore.setText("ניקוד שחקן כחול: " + blueScore);
+        tvRedScore.setText("ניקוד שחקן אדום: " + redScore);
+
+        if (blueScore > redScore) {
+            tvWinner.setText("המנצח: כחול!");
+            tvWinner.setTextColor(Color.parseColor("#1976D2"));
+        } else if (redScore > blueScore) {
+            tvWinner.setText("המנצח: אדום!");
+            tvWinner.setTextColor(Color.parseColor("#D32F2F"));
+        } else {
+            tvWinner.setText("תיקו!");
+            tvWinner.setTextColor(Color.parseColor("#424242"));
+        }
+
+        // חזרה למסך המשחק (שמאפס את הניקוד ב-onResume)
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
         });
     }
 }
